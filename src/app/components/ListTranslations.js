@@ -15,7 +15,7 @@ class ListTranslations extends Component {
         
         <div className="embed-container">
           <h1>Source (from <i>{translation.post.author.name}</i> on <i>{translation.post.provider}</i>)</h1>
-          <p>{translation.post.text}</p>
+          <p className={translation.post.lang}>{translation.post.text}</p>
           <nav className="source-nav">
             <ul className="list-inline">
               <li><a href={translation.source_url} target="_blank">See on <i>{translation.post.provider}</i></a></li>
@@ -27,8 +27,8 @@ class ListTranslations extends Component {
 
         <div className="embed-container">
           <h1>Translation</h1>
-          <p>{translation.translation}</p>
-          <p><em>{translation.annotation}</em></p>
+          <p className={translation.lang}>{translation.translation}</p>
+          <p className={translation.lang}><em>{translation.annotation}</em></p>
           <nav className="source-nav">
             <ul className="list-inline">
               <li><a href={translation.link} target="_blank">See on Bridge Reader</a></li>

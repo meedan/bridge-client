@@ -286,12 +286,14 @@ export function myTranslations(step) {
               source_url: t.source.link,
               translation: t.text,
               annotation: (t.comments.length > 0 ? t.comments[0].text : ''),
+              lang: t.lang.replace(/_.*$/, ''),
               post: {
                 author: {
                   name: t.source.author
                 },
                 text: t.source.text,
-                provider: t.source.provider
+                provider: t.source.provider,
+                lang: t.source.lang.replace(/_.*$/, '')
               }
             });
           }

@@ -18,11 +18,12 @@ class Source extends Component {
 
   render() {
     const p = this.props.post;
+    const lang = p.languages[0].replace(/_.*$/, '');
     return (
       <div className="embed-container">
         <div className={this.state.show ? 'embed' : 'hidden embed'}>
           <h1><i>{p.author.name}</i> <span>on</span> <i>{p.provider}</i></h1>
-          <p>{p.text}</p>
+          <p className={lang}>{p.text}</p>
         </div>
         <nav className="source-nav">
           <ul className="list-inline">
