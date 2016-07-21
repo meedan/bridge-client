@@ -7,13 +7,14 @@ class BackBar extends Component {
 
   render() {
     return (
-      <div className="back-bar">
-        <a onClick={this.loadTranslations.bind(this)} id="my-translations-link">My Translations</a>
-        <a onClick={this.props.goBack}>
-          <img src="/images/backbutton.svg" />
-          Close
-        </a>
-      </div>
+      <header className="back-bar">
+        <nav>
+          <ul>
+            <li><a onClick={this.loadTranslations.bind(this)} id="my-translations-link">My Translations</a></li>
+          </ul>
+          <div className="close-screen" onClick={this.props.goBack}>Close</div>
+        </nav>
+      </header>
     );
   }
 }

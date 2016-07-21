@@ -1,22 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import BridgeSelect from './BridgeSelect';
-import Embedly from './Embedly';
+import Source from './Source';
 import BackBar from './BackBar';
 
 class SaveTranslation extends Component {
-  onTranslationFocus() {
-    var field = React.findDOMNode(this.translation)
-    if (field.value === 'Enter your translation here') {
-      field.value = "";
-    }
-    field.style.backgroundColor = '#F4F4F4';
-  }
-
-  onTranslationBlur() {
-    var field = React.findDOMNode(this.translation);
-    field.style.backgroundColor = '#FFF';
-  }
-
   onTranslationKey() {
     var field = React.findDOMNode(this.translation),
         url = this.props.state.bridge.url;
@@ -25,7 +12,7 @@ class SaveTranslation extends Component {
 
   onAnnotationFocus() {
     var field = React.findDOMNode(this.annotation);
-    if (field.value === 'Enter your annotation here') {
+    if (field.value === 'Add an annotation to your translation') {
       field.value = "";
     }
   }
@@ -63,47 +50,61 @@ class SaveTranslation extends Component {
     const { loginTwitter, loginFacebook, goBack, savePost, submitPost, saveTranslation, submitTranslation, myTranslations, updateTranslation, state } = this.props;
 
     return (
-      <div>
+      <div className="main container">
         <BackBar goBack={goBack} myTranslations={myTranslations} />
-        <div className="textured">
-          <div className="light-gray-background">
-            <h3 className="action">Translate this post</h3>
-            <div className="column form-column" id="translation-form">
-              <Embedly url={state.bridge.url} />
-              <form onSubmit={state.bridge.action === 'edit' ? updateTranslation.bind(this) : submitTranslation.bind(this)}>
-                
-                <label for="translation">Translation</label>
+        <div className="content">
+          <Source post={state.bridge.post} />
+          <div className="form-container">
 
+            <form className="translation-container">
+              
+              <div className="form-group translate-form">
+                <label for="translation">Your Translation</label>
                 <textarea name="translation"
+                          className="form-control"
                           id="translation"
-                          onFocus={this.onTranslationFocus.bind(this)} 
-                          onBlur={this.onTranslationBlur.bind(this)} 
                           onKeyUp={this.onTranslationKey.bind(this)}
-                          ref={(ref) => this.translation = ref}>{state.bridge.translation || 'Enter your translation here'}</textarea>
-
-                <label for="annotation">Annotation</label>
-
+                          ref={(ref) => this.translation = ref}>{state.bridge.translation}</textarea>
+              </div>
+              
+              <div className="form-group annotation">
                 <textarea name="annotation" 
+                          className="form-control"
                           id="annotation"
                           onFocus={this.onAnnotationFocus.bind(this)} 
                           onKeyUp={this.onAnnotationKey.bind(this)}
-                          ref={(ref) => this.annotation = ref}>{state.bridge.annotation || 'Enter your annotation here'}</textarea>
-            
-                {(() => {
-                  if (state.bridge.action != 'edit') {
-                    return (
-                      <div>
-                        <BridgeSelect name="project" objects={state.extension.projects} />
-                        <BridgeSelect name="from" objects={state.extension.sourcelanguages} multi={true} />
-                        <BridgeSelect name="to" objects={state.extension.targetlanguages} />
+                          ref={(ref) => this.annotation = ref}>{state.bridge.annotation || 'Add an annotation to your translation'}</textarea>
+              </div>
+
+              {(() => {
+                if (state.bridge.action != 'edit') {
+                  return (
+                    <div>
+
+                      <div className="form-group project">
+                        <BridgeSelect title="Choose Project:" name="project" objects={state.extension.projects} />
                       </div>
-                    );
-                  }
-                })()}
-                
-                <button className="btn btn-large" id="submit">Save Translation</button>
-              </form>
-            </div>
+
+                      <div className="form-group language clearfix">
+                        <div className="source">
+                          <BridgeSelect title="Source Language:" name="from" objects={state.extension.sourcelanguages} multi={true} />
+                        </div>
+
+                        <div className="target">
+                          <BridgeSelect title="Target Language:" name="to" objects={state.extension.targetlanguages} />
+                        </div>
+                      </div>
+
+                    </div>
+                  );
+                }
+              })()}
+
+              <ul className="submit list-inline">
+                <li><a className="btn add-translation-bridge" onClick={state.bridge.action === 'edit' ? updateTranslation.bind(this) : submitTranslation.bind(this)}>Save Translation to Bridge</a> <span className="cancel">or <a onClick={goBack.bind(this)}>cancel</a></span></li>
+              </ul>
+
+            </form>
           </div>
         </div>
       </div>

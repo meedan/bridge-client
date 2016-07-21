@@ -4,12 +4,16 @@ import BackBar from './BackBar';
 class Message extends Component {
   render() {
     const { loginTwitter, loginFacebook, goBack, savePost, submitPost, saveTranslation, submitTranslation, myTranslations, state } = this.props;
+    const message = state.bridge.message.replace(/<\/?h[^>]+>/g, ' ');
     return (
-      <div>
+      <div className="main container">
         <BackBar goBack={goBack} myTranslations={myTranslations} />
-        <div class="textured">
-          <img src={state.bridge.image ? ('images/' + state.bridge.image + '.svg') : 'images/error-general-bug.svg' } />
-          <div className="message" dangerouslySetInnerHTML={{__html: state.bridge.message}}></div>
+
+        <div className="content">
+          <div className="embed-container">
+            <h1 dangerouslySetInnerHTML={{__html: message}}></h1>
+            <p><a className="btn" onClick={goBack}>Done</a></p>
+          </div>
         </div>
       </div>
     );

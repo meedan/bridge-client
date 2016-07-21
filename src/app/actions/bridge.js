@@ -72,17 +72,18 @@ var requestAuth = function(provider, type, dispatch) {
       }, 500);
     }
     else {
-      dispatch({ session: JSON.parse(response.text), type: type, provider: provider, view: 'menu', previousView: 'login' });
+      dispatch({ session: JSON.parse(response.text), type: type, provider: provider, view: 'save_post', previousView: 'login' });
     }
   });
 };
 
 export function loginTwitter() {
   return (dispatch, getState) => {
-    var session = getState().bridge.session;
+    var state = getState(),
+        session = state.bridge.session;
 
     if (session != undefined && session.provider === 'twitter') {
-      dispatch({ session: session, type: LOGIN_TWITTER, provider: 'twitter', view: 'menu', previousView: 'login' });
+      saveObject(dispatch, state, SAVE_POST, 'save_post', state.extension.url);
     }
 
     requestAuth('twitter', LOGIN_TWITTER, dispatch);
@@ -91,10 +92,11 @@ export function loginTwitter() {
 
 export function loginFacebook() {
   return (dispatch, getState) => {
-    var session = getState().bridge.session;
+    var state = getState(),
+        session = state.bridge.session;
 
     if (session != undefined && session.provider === 'facebook') {
-      dispatch({ session: session, type: LOGIN_FACEBOOK, provider: 'facebook', view: 'menu', previousView: 'login' });
+      saveObject(dispatch, state, SAVE_POST, 'save_post', state.extension.url);
     }
 
     requestAuth('facebook', LOGIN_FACEBOOK, dispatch);
@@ -136,7 +138,9 @@ var saveObject = function(dispatch, state, type, view, url) {
         languages.unshift({ id: '', title: 'Auto-Detect' });
         state.extension.sourcelanguages = languages.slice();
       
-        dispatch({ type: type, view: view, session: bstate.session, previousView: 'menu', url: url });
+        request('get', 'posts/parse', bstate.session, { url: url }, type, dispatch, view, bstate.view, function(dispatch, response) {
+          dispatch({ type: type, view: view, session: bstate.session, previousView: 'login', url: url, post: response.data });
+        });
       });
     }
   });
@@ -145,7 +149,7 @@ var saveObject = function(dispatch, state, type, view, url) {
 export function savePost() {
   return (dispatch, getState) => {
     var state = getState();
-    saveObject(dispatch, state, SAVE_POST, 'save_post', '');
+    saveObject(dispatch, state, SAVE_POST, 'save_post', state.extension.url);
   };
 }
 
@@ -159,9 +163,11 @@ export function saveTranslation() {
 export function submitPost(e) {
   return (dispatch, getState) => {
     disableButton();
+    
+    var form = document.forms[0];
 
-    var project_id = e.target['0'].value,
-        language   = e.target['2'].value,
+    var project_id = form.project.value,
+        language   = form.language.value,
         state      = getState().bridge,
         url        = getState().extension.url;
 
@@ -186,12 +192,8 @@ export function submitTranslation(e) {
         state       = getState().bridge,
         url         = getState().extension.url;
 
-    if (comment === 'Enter your annotation here') {
+    if (comment === 'Add an annotation to your translation') {
       comment = '';
-    }
-
-    if (translation === 'Enter your translation here') {
-      translation = '';
     }
 
     if (project_id === '') {
@@ -279,10 +281,18 @@ export function myTranslations(step) {
             extension.translations.push({
               id: t.id,
               embed_url: t.embed_url + '.js',
+              link: t.embed_url,
               index: extension.translations.length,
               source_url: t.source.link,
               translation: t.text,
-              annotation: (t.comments.length > 0 ? t.comments[0].text : '')
+              annotation: (t.comments.length > 0 ? t.comments[0].text : ''),
+              post: {
+                author: {
+                  name: t.source.author
+                },
+                text: t.source.text,
+                provider: t.source.provider
+              }
             });
           }
           extension.currentTranslation += step;
@@ -326,7 +336,7 @@ export function editTranslation() {
         extension = getState().extension,
         translation = extension.translations[extension.currentTranslation];
 
-    dispatch({ type: SAVE_TRANSLATION, view: 'save_translation', session: state.session, previousView: 'menu', url: translation.source_url, action: 'edit', translation: translation.translation, annotation: translation.annotation });
+    dispatch({ type: SAVE_TRANSLATION, view: 'save_translation', session: state.session, previousView: 'login', url: translation.source_url, action: 'edit', translation: translation.translation, annotation: translation.annotation, post: translation.post });
   };
 }
 
@@ -334,8 +344,10 @@ export function updateTranslation(e) {
   return (dispatch, getState) => {
     disableButton();
 
-    var text        = e.target['0'].value,
-        comment     = e.target['1'].value,
+    var form = document.forms[0];
+
+    var text        = form.translation.value,
+        comment     = form.annotation.value,
         state       = getState().bridge,
         extension   = getState().extension,
         translation = extension.translations[extension.currentTranslation];

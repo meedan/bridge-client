@@ -5,9 +5,9 @@
 #confirmation-box {
   position: absolute;
   top: 35px;
-  left: -80px;
+  left: 50px;
   height: 175px;
-  width: 300px;
+  width: 400px;
   padding: 20px;
   border-radius: 5px;
   background: #fff;
@@ -30,13 +30,13 @@
     cursor: pointer;
     border: 0;
     color: #fff;
-    border: 2px solid $bridge-orange;
-    background: $bridge-orange;
+    border: 2px solid $int-orange;
+    background: $int-orange;
     margin: 10px 20px;
   }
   
   .confirm-button.cancel {
     background: #fff;
-    color: $bridge-orange;
+    color: $int-orange;
   }
 }

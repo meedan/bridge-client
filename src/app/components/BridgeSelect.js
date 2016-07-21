@@ -33,7 +33,7 @@ class BridgeSelect extends Component {
     var options = this.options = [],
         objects = this.props.objects,
         name    = this.name = this.props.name,
-        title   = name.charAt(0).toUpperCase() + name.slice(1);
+        title   = this.props.title || (name.charAt(0).toUpperCase() + name.slice(1));
 
     for (var i = 0; i < objects.length; i++) {
       options.push({ value: objects[i].id, label: objects[i].title });

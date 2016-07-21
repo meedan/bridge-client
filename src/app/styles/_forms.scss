@@ -1,17 +1,3 @@
-form {
-  margin: 10px;
-  align-content: center;
-}
-
-label {
-  float: left;
-  font-size: 20px;
-  color: $warm-gray;
-  font-weight: 700;
-  padding-top: 1.5em;
-  padding-bottom: 0.5em;
-}
-
 :focus {
   outline-color: transparent;
   outline-style: none;
@@ -20,10 +6,9 @@ label {
 .dropdown {
   display: block;
   clear: both;
-  margin-top: 40px;
-  margin-left: 10px;
-  border: 2px solid $keyboard-gray;
-  font-size: 16px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #555;
 }
 
 select {
@@ -31,31 +16,21 @@ select {
   color: #000;
 }
 
-textarea {
-  display: block;
-  width: 98%;
-  border-radius: 4px;
-  padding: 2px;
-  min-height: 80px;
+div.select-project, div.select-language, div.select-from, div.select-to {
+  width: 100%;
 }
 
-textarea#translation {
-  border: 2px solid $bridge-orange;
+.language .source, .language .target {
+  width: 49%;
+  margin-right: 0;
 }
 
-textarea#annotation {
-  border: 2px solid $light-bridge-orange;
-  background: $light-bridge-orange;
-}
-
-div.select-project, div.select-language {
-  width: 50%;
+.language .source {
   float: left;
 }
 
-#translation-form div.select-project, div.select-from, div.select-to {
-  width: 33%;
-  float: left;
+.language .target {
+  float: right;
 }
 
 #submit {
@@ -70,38 +45,21 @@ div.select-project, div.select-language {
   margin-left: 0;
 }
 
-#project .dropdown {
-  margin-right: 5px;
-}
-
-#language .dropdown {
-  margin-left: 5px;
-}
-
-#to .dropdown {
-  margin-left: 5px;
-}
-
-#from .dropdown {
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
 .Select-item {
   padding: 1px 6px 8px 6px;
   margin: 0;
   width: 100%;
-  color: $lighter-gray;
+  color: #555;
 }
 
 .Select-item-icon {
   cursor: pointer;
   margin-right: 5px;
-  color: $lighter-gray;
+  color: #555;
 }
 
 .Select-item-icon:hover {
-  color: $dark-gray;
+  color: #000;
 }
 
 .Select-clear-zone {

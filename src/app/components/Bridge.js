@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import superagent from 'superagent';
 import config from '../config/config.js';
 import Login from './Login';
-import Menu from './Menu';
 import Message from './Message';
 import SavePost from './SavePost';
 import SaveTranslation from './SaveTranslation';
@@ -30,7 +29,7 @@ class Bridge extends Component {
     return true;
   }
 
-  loggedIn(state) {
+  loggedIn(state, savePost) {
     var that     = this,
         provider = that.currentProvider(state),
         fail     = function() {
@@ -38,8 +37,7 @@ class Bridge extends Component {
           that.forceUpdate();
         },
         success  = function() {
-          state.bridge.view = 'menu';
-          that.forceUpdate();
+          savePost();
         }
 
     if (provider === null) {
@@ -74,14 +72,12 @@ class Bridge extends Component {
 
     switch (view) {
       case 'home':
-        this.loggedIn(state);
+        this.loggedIn(state, savePost);
         return null;
       case 'message':
         return (<Message {...this.props} />);
       case 'login':
         return (<Login {...this.props} />);
-      case 'menu':
-        return (<Menu {...this.props} />);
       case 'save_post':
         if (this.pageSupported(state)) {
           return (<SavePost {...this.props} />);

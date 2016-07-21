@@ -2,11 +2,11 @@ import React, { Component, PropTypes } from 'react';
 
 class ConfirmationLink extends Component {
   showConfirm() {
-    document.getElementById('confirmation-box').style.display = 'block';
+    document.getElementById('confirmation-box').className = '';
   }
 
 	hideConfirm() {
-    document.getElementById('confirmation-box').style.display = 'none';
+    document.getElementById('confirmation-box').className = 'hidden';
 	}
 
   executeAction() {

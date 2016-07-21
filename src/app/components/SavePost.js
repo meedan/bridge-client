@@ -1,28 +1,35 @@
 import React, { Component, PropTypes } from 'react';
 import BridgeSelect from './BridgeSelect';
-import Embedly from './Embedly';
+import Source from './Source';
 import BackBar from './BackBar';
 
 class SavePost extends Component {
   render() {
     const { loginTwitter, loginFacebook, goBack, savePost, submitPost, saveTranslation, submitTranslation, myTranslations, state } = this.props;
     return (
-      <div>
+      <div className="main container">
         <BackBar goBack={goBack} myTranslations={myTranslations} />
-        <div className="textured">
-          <div className="light-gray-background">
-            <h3 className="action">Save to existing project for translation</h3>
-            <div className="column form-column">
-              <Embedly url={state.extension.url} />
-              <form onSubmit={submitPost.bind(this)}>
-                <div>
-                  <BridgeSelect name="project" objects={state.extension.projects} />
-                  <BridgeSelect name="language" objects={state.extension.sourcelanguages} multi={true} />
-                </div>
-                <button className="btn btn-large" id="submit">Add to Project</button>
-              </form>
+        <Source post={state.bridge.post} />
+        <div className="form-container">
+          <form className="translation-container">
+            
+            <div className="form-group project">
+              <BridgeSelect title="Choose Project:" name="project" objects={state.extension.projects} />
             </div>
-          </div>
+            
+            <div className="form-group language clearfix">
+              <div className="source">
+                <BridgeSelect title="Source Language:" name="language" objects={state.extension.sourcelanguages} multi={true} />
+              </div>
+            </div>
+            
+            <ul className="submit list-inline">
+              <li><a className="btn add-translation" onClick={saveTranslation.bind(this)}>Add Translation</a></li>
+              <li className="pull-right">
+                <a onClick={submitPost.bind(this)} className="btn add-queue">Add to Queue</a>
+              </li>
+            </ul>
+          </form>
         </div>
       </div>
     );
