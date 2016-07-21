@@ -56,7 +56,7 @@ var request = function(method, endpoint, session, data, type, dispatch, view, pr
 
 // Request auth information from backend
 
-var requestAuth = function(provider, type, dispatch) {
+var requestAuth = function(provider, type, dispatch, state) {
   superagent.get(config.bridgeApiBase + '/api/users/' + provider + '_info')
   .end(function(err, response) {
     if (err) {
@@ -67,12 +67,12 @@ var requestAuth = function(provider, type, dispatch) {
       var timer = window.setInterval(function() {   
         if (win.closed) {  
           window.clearInterval(timer);
-          requestAuth(provider, type, dispatch);
+          requestAuth(provider, type, dispatch, state);
         }  
       }, 500);
     }
     else {
-      dispatch({ session: JSON.parse(response.text), type: type, provider: provider, view: 'save_post', previousView: 'login' });
+      dispatch({ session: JSON.parse(response.text), type: type, provider: provider, view: 'home', previousView: 'login' });
     }
   });
 };
@@ -86,7 +86,7 @@ export function loginTwitter() {
       saveObject(dispatch, state, SAVE_POST, 'save_post', state.extension.url);
     }
 
-    requestAuth('twitter', LOGIN_TWITTER, dispatch);
+    requestAuth('twitter', LOGIN_TWITTER, dispatch, state);
   };
 }
 
@@ -99,7 +99,7 @@ export function loginFacebook() {
       saveObject(dispatch, state, SAVE_POST, 'save_post', state.extension.url);
     }
 
-    requestAuth('facebook', LOGIN_FACEBOOK, dispatch);
+    requestAuth('facebook', LOGIN_FACEBOOK, dispatch, state);
   };
 }
 
