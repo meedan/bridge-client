@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import BridgeSelect from './BridgeSelect';
 import Source from './Source';
 import BackBar from './BackBar';
+import SuggestTranslations from './SuggestTranslations';
 
 class SaveTranslation extends Component {
   onTranslationKey() {
@@ -67,6 +68,11 @@ class SaveTranslation extends Component {
                           ref={(ref) => this.translation = ref}>{state.bridge.translation}</textarea>
               </div>
               
+              <div className="form-group translate-form">
+                <label for="translation">Your Translation with autocomplete</label>
+                <SuggestTranslations />
+              </div>
+
               <div className="form-group annotation">
                 <textarea name="annotation" 
                           className="form-control"
