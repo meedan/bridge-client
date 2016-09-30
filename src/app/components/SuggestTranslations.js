@@ -3,54 +3,6 @@ import Autosuggest from 'react-autosuggest';
 import superagent from 'superagent';
 import config from '../config/config.js';
 
-function searchAlegre(text) {
-   var languages2;
-   superagent.get('http://localhost:3004/api/prediction/predict') // Need to add url and token on config
-   .query('json=%7B%22text%22%3A%22'+ text + '%22%2C%22language_text%22%3A%22en%22%2C%22language_from%22%3A%22pt%22%2C%20%22context%22%3A%7B%22provider%22%3A%22translation%22%7D%7D')
-   .query('number_suggestions=3')
-   .set('X-Alegre-Token', '34195957c7ac7b2d4e162881210eeff4')
-   .set('Content-Type', 'application/json')
-   .end(function(err, response){
-     if (err || !response.ok) {
-       alert(err + ' ' + response.text);
-     } else {
-       console.log('Web Server started, waiting for connections...');
-       languages2 = response.body.data
-       console.log(languages2)
-       return languages2;
-     }
-   });
-   console.log(languages2);
-}
-
-// Teach Autosuggest how to calculate suggestions for any given input value.
-function getSuggestions(value) {
-  const inputValue = value.trim().toLowerCase();
-  const inputLength = inputValue.length;
-
-console.log('no get');
-console.log(searchAlegre(inputValue));
-  return inputLength === 0 ? [] : searchAlegre(inputValue).filter(sug => sug.toLowerCase().slice(0, inputLength) === inputValue );
-}
-
-// When suggestion is clicked, Autosuggest needs to populate the input field
-// based on the clicked suggestion. Teach Autosuggest how to calculate the
-// input value for every given suggestion.
-function getSuggestionValue(suggestion) {
-  return suggestion;
-}
-
-// Use your imagination to render suggestions.
-function renderSuggestion(suggestion) {
-  return (
-    <span>{suggestion}</span>
-  );
-}
-
-function shouldRenderSuggestions(value) {
-  return value.trim().length > 4;
-}
-
 class SuggestTranslations extends React.Component {
   constructor() {
     super();
@@ -66,6 +18,50 @@ class SuggestTranslations extends React.Component {
     };
   }
 
+  searchAlegre(text, callback) {
+     var languages2;
+     superagent.get('http://localhost:3004/api/prediction/predict') // Need to add url and token on config
+     .query('json=%7B%22text%22%3A%22'+ text + '%22%2C%22language_text%22%3A%22en%22%2C%22language_from%22%3A%22pt%22%2C%20%22context%22%3A%7B%22provider%22%3A%22translation%22%7D%7D')
+     .query('number_suggestions=3')
+     .set('X-Alegre-Token', '34195957c7ac7b2d4e162881210eeff4')
+     .set('Content-Type', 'application/json')
+     .end(callback);
+  }
+
+  // Teach Autosuggest how to calculate suggestions for any given input value.
+  getSuggestions(value, callback) {
+    var suggestions;
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+  
+    this.searchAlegre(inputValue, function(err, response) {
+      if(err) {
+        console.log(err);
+        return;
+      }
+      suggestions =  response.body.data;
+      callback(suggestions);
+    });
+  }
+
+  // When suggestion is clicked, Autosuggest needs to populate the input field
+  // based on the clicked suggestion. Teach Autosuggest how to calculate the
+  // input value for every given suggestion.
+  getSuggestionValue(suggestion) {
+    return suggestion;
+  }
+
+  // Use your imagination to render suggestions.
+  renderSuggestion(suggestion) {
+    return (
+      <span>{suggestion}</span>
+    );
+  }
+
+  shouldRenderSuggestions(value) {
+    return value.trim().length > 4;
+  }
+
   onChange = (event, { newValue }) => {
     this.setState({
       value: newValue
@@ -76,8 +72,9 @@ class SuggestTranslations extends React.Component {
   // suggestions.
   // You already implemented this logic above, so just use it.
   onSuggestionsFetchRequested = ({ value }) => {
-    this.setState({
-      suggestions: getSuggestions(value)
+    var self = this;
+    self.getSuggestions(value, function(data) {
+      self.setState({suggestions: data});
     });
   };
 
@@ -94,7 +91,6 @@ class SuggestTranslations extends React.Component {
 
     // Autosuggest will pass through all these props to the input field.
     const inputProps = {
-      placeholder: 'Type Alice',
       value,
       onChange: this.onChange
     };
@@ -103,11 +99,12 @@ class SuggestTranslations extends React.Component {
     return (
       <Autosuggest
         suggestions={suggestions}
-        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-        getSuggestionValue={getSuggestionValue}
-        renderSuggestion={renderSuggestion}
-        shouldRenderSuggestions={shouldRenderSuggestions}
+        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
+        onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
+        onSuggestionSelected={this.onSuggestionSelected}
+        getSuggestionValue={this.getSuggestionValue}
+        renderSuggestion={this.renderSuggestion}
+        shouldRenderSuggestions={this.shouldRenderSuggestions}
         inputProps={inputProps} />
     );
   }
