@@ -12,7 +12,18 @@ class Message extends Component {
         <div className="content">
           <div className="embed-container">
             <h1 dangerouslySetInnerHTML={{__html: message}}></h1>
-            <p><a className="btn" onClick={goBack}>Done</a></p>
+            <p>
+
+            {(() => {
+              if (state.bridge.hideButton) {
+                return null;
+              }
+              else {
+                return(<a className="btn" onClick={goBack}>Done</a>);
+              }
+            })()}
+            
+            </p>
           </div>
         </div>
       </div>

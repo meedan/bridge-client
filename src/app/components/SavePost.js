@@ -9,7 +9,16 @@ class SavePost extends Component {
     return (
       <div className="main container">
         <BackBar goBack={goBack} myTranslations={myTranslations} />
-        <Source post={state.bridge.post} />
+
+        {(() => {
+          if (state.bridge.post) {
+            return(<Source post={state.bridge.post} />);
+          }
+          else {
+            return(<p className="parsing-post">Parsing post...</p>);
+          }
+        })()}
+
         <div className="form-container">
           <form className="translation-container">
             

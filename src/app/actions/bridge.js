@@ -117,6 +117,9 @@ export function goBack() {
 
 var saveObject = function(dispatch, state, type, view, url) {
   var bstate = state.bridge;
+  
+  dispatch({ type: ERROR, message: 'We are parsing your post...', view: 'message', session: bstate.session, previousView: bstate.view, hideButton: true });
+ 
   request('get', 'projects', bstate.session, {}, type, dispatch, view, bstate.view, function(dispatch, response) {
     var projects = response.data;
     if (projects.length === 0) {
@@ -170,6 +173,8 @@ export function submitPost(e) {
         language   = form.language.value,
         state      = getState().bridge,
         url        = getState().extension.url;
+    
+    dispatch({ type: ERROR, message: 'Submitting...', view: 'message', session: state.session, previousView: 'save_post', hideButton: true });
 
     request('post', 'posts', state.session, { url: url, project_id: project_id, post_lang: language }, SAVE_POST, dispatch, 'message', 'save_post', function(dispatch, response) {
       dispatch({ type: SAVE_POST, message: '<h1>Success!</h1><h2>This post will be available for translators</h2>', view: 'message', session: state.session, previousView: 'reload', image: 'confirmation-saved' })
@@ -191,6 +196,8 @@ export function submitTranslation(e) {
         comment     = form.annotation.value,
         state       = getState().bridge,
         url         = getState().extension.url;
+    
+    dispatch({ type: ERROR, message: 'Submitting...', view: 'message', session: state.session, previousView: 'save_translation', hideButton: true });
 
     if (comment === 'Add an annotation to your translation') {
       comment = '';
