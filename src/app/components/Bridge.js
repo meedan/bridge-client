@@ -41,7 +41,9 @@ class Bridge extends Component {
         }
 
     if (provider === null) {
-      fail();
+      state.bridge.view = 'message';
+      state.bridge.message = '<h1>Oops - right now, Bridge only works with posts from Twitter or Facebook. Try again?</h1>';
+      that.forceUpdate();
     }
 
     else if (state && state.bridge && state.bridge.session && state.bridge.session.provider === provider) {
