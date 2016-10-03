@@ -118,7 +118,7 @@ export function goBack() {
 var saveObject = function(dispatch, state, type, view, url) {
   var bstate = state.bridge;
   
-  dispatch({ type: ERROR, message: 'We are parsing your post...', view: 'message', session: bstate.session, previousView: bstate.view, hideButton: true });
+  dispatch({ type: ERROR, message: 'Please wait while we load your post', view: 'message', session: bstate.session, previousView: bstate.view, hideButton: true });
  
   request('get', 'projects', bstate.session, {}, type, dispatch, view, bstate.view, function(dispatch, response) {
     var projects = response.data;
