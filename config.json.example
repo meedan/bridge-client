@@ -2,6 +2,8 @@
   "title": "Bridge Local",
   "bridgeApiBase": "http://localhost:3000",
   "bridgeEmbedBase": "http://localhost:3001",
+  "alegreApiBase": "http://localhost:3004",
+  "alegreApiToken": "c9a14088a92774778119edcd867de4b6",
   "suffix": "local",
   "public": "false",
   "googleAppId": "",
