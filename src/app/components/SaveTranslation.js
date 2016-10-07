@@ -61,15 +61,6 @@ class SaveTranslation extends Component {
               
               <div className="form-group translate-form">
                 <label for="translation">Your Translation</label>
-                <textarea name="translation"
-                          className="form-control"
-                          id="translation"
-                          onKeyUp={this.onTranslationKey.bind(this)}
-                          ref={(ref) => this.translation = ref}>{state.bridge.translation}</textarea>
-              </div>
-              
-              <div className="form-group translate-form">
-                <label for="translation">Your Translation with autocomplete</label>
                 <SuggestTranslations />
               </div>
 

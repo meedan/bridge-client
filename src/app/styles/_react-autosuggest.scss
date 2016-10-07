@@ -2,22 +2,13 @@
   position: relative;
 }
 
-.react-autosuggest__input {
-  width: 240px;
+.textarea {
+  width: 100%;
   min-height: 64px;
   padding: 10px 20px;
-  font-family: Helvetica, sans-serif;
-  font-weight: 300;
-  font-size: 16px;
-  border: 1px solid #aaa;
-  border-radius: 4px;
 }
 
-.react-autosuggest__input:focus {
-  outline: none;
-}
-
-.react-autosuggest__container--open .react-autosuggest__input {
+.react-autosuggest__container--open {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }

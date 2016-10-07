@@ -23,7 +23,7 @@ class SuggestTranslations extends React.Component {
      superagent.get('http://localhost:3004/api/prediction/predict') // Need to add url and token on config
      .query('json=%7B%22text%22%3A%22'+ text + '%22%2C%22language_text%22%3A%22en%22%2C%22language_from%22%3A%22pt%22%2C%20%22context%22%3A%7B%22provider%22%3A%22translation%22%7D%7D')
      .query('number_suggestions=3')
-     .set('X-Alegre-Token', '34195957c7ac7b2d4e162881210eeff4')
+     .set('X-Alegre-Token', 'c9a14088a92774778119edcd867de4b6')
      .set('Content-Type', 'application/json')
      .end(callback);
   }
@@ -52,14 +52,15 @@ class SuggestTranslations extends React.Component {
   }
 
   // Use your imagination to render suggestions.
-  renderSuggestion(suggestion) {
+  renderSuggestion(suggestion, {query}) {
     return (
-      <span>{suggestion}</span>
+      <span>{query} <b>{suggestion}</b></span>
     );
   }
 
+  // Render only when user types space
   shouldRenderSuggestions(value) {
-    return value.trim().length > 4;
+    return value.charCodeAt(value.length-1) === 32;
   }
 
   onChange = (event, { newValue }) => {
@@ -86,13 +87,22 @@ class SuggestTranslations extends React.Component {
     });
   };
 
+  onSuggestionSelected(event, { suggestionValue }) {
+    this.setState({
+      value: this.state.value + suggestionValue
+    });
+  }
+
   render() {
     const { value, suggestions } = this.state;
 
     // Autosuggest will pass through all these props to the input field.
     const inputProps = {
       value,
-      onChange: this.onChange
+      onChange: this.onChange,
+      className: 'form-control textarea',
+      id: 'translation',
+      name: 'translation'
     };
 
     // Finally, render it!
@@ -101,10 +111,10 @@ class SuggestTranslations extends React.Component {
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
-        onSuggestionSelected={this.onSuggestionSelected}
-        getSuggestionValue={this.getSuggestionValue}
-        renderSuggestion={this.renderSuggestion}
-        shouldRenderSuggestions={this.shouldRenderSuggestions}
+        onSuggestionSelected={this.onSuggestionSelected.bind(this)}
+        getSuggestionValue={this.getSuggestionValue.bind(this)}
+        renderSuggestion={this.renderSuggestion.bind(this)}
+        shouldRenderSuggestions={this.shouldRenderSuggestions.bind(this)}
         inputProps={inputProps} />
     );
   }
