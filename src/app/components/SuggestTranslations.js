@@ -29,17 +29,15 @@ class SuggestTranslations extends React.Component {
 
   // Teach Autosuggest how to calculate suggestions for any given input value.
   getSuggestions(value, callback) {
-    var suggestions;
-    const inputValue = value.trim().toLowerCase();
-    const inputLength = inputValue.length;
-  
-    this.searchAlegre(inputValue, function(err, response) {
+    const lastSentence = value.toLowerCase().split(".").splice(-1)[0].trim();
+    const inputLength = lastSentence.length;
+
+    this.searchAlegre(lastSentence, function(err, response) {
       if(err) {
         console.log(err);
         return;
       }
-      suggestions =  response.body.data;
-      callback(suggestions);
+      callback(response.body.data);
     });
   }
 
@@ -53,14 +51,14 @@ class SuggestTranslations extends React.Component {
   // Use your imagination to render suggestions.
   renderSuggestion(suggestion, {query}) {
     return (
-      <span>{query} <b>{suggestion}</b></span>
+      <span>{suggestion}</span>
     );
   }
 
   // Render only when user types space
   shouldRenderSuggestions(value) {
     return value.charCodeAt(value.length-1) === 32;
-  }
+  };
 
   onChange = (event, { newValue }) => {
     this.setState({
