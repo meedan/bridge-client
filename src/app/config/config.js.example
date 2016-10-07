@@ -1,5 +1,7 @@
 var config = {};
 
 config.bridgeApiBase = 'http://bridge-api-base';
+config.alegreApiBase = 'http://alegre-api-base';
+config.alegreApiToken = 'alegre-secret-token';
 
 module.exports = config;

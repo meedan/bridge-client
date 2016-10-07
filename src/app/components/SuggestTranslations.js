@@ -19,11 +19,10 @@ class SuggestTranslations extends React.Component {
   }
 
   searchAlegre(text, callback) {
-     var languages2;
-     superagent.get('http://localhost:3004/api/prediction/predict') // Need to add url and token on config
-     .query('json=%7B%22text%22%3A%22'+ text + '%22%2C%22language_text%22%3A%22en%22%2C%22language_from%22%3A%22pt%22%2C%20%22context%22%3A%7B%22provider%22%3A%22translation%22%7D%7D')
+     superagent.get(config.alegreApiBase + '/api/prediction/predict')
+     .query('json=%7B%22text%22%3A%22'+ text + '%22%2C%22language_text%22%3A%22en%22%2C%22language_from%22%3A%22pt%22%2C%20%22context%22%3A%7B%22provider%22%3A%22translation%22%7D%7D') // need to get the language from instead of hardcoded
      .query('number_suggestions=3')
-     .set('X-Alegre-Token', 'c9a14088a92774778119edcd867de4b6')
+     .set('X-Alegre-Token', config.alegreApiToken)
      .set('Content-Type', 'application/json')
      .end(callback);
   }

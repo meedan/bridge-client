@@ -45,6 +45,8 @@ gulp.task('config:build:extension', () => {
 
   gulp.src('./src/app/config/config.js.example')
   .pipe(replace('http://bridge-api-base', config.bridgeApiBase))
+  .pipe(replace('http://alegre-api-base', config.alegreApiBase))
+  .pipe(replace('alegre-secret-token', config.alegreApiToken))
   .pipe(rename('config.js'))
   .pipe(gulp.dest('./src/app/config'));
 });
