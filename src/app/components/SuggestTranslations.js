@@ -20,8 +20,8 @@ class SuggestTranslations extends React.Component {
 
   searchAlegre(text, callback) {
      superagent.get(config.alegreApiBase + '/api/prediction/predict')
-     .query('json=%7B%22text%22%3A%22'+ text + '%22%2C%22language_text%22%3A%22en%22%2C%22language_from%22%3A%22pt%22%2C%20%22context%22%3A%7B%22provider%22%3A%22translation%22%7D%7D') // need to get the language from instead of hardcoded
-     .query('number_suggestions=3')
+     .query('json=%7B%22text%22%3A%22'+ text + '%22%2C%22language_text%22%3A%22en%22%7D') // need to get the language from instead of hardcoded
+     .query('number_suggestions=10')
      .set('X-Alegre-Token', config.alegreApiToken)
      .set('Content-Type', 'application/json')
      .end(callback);
@@ -29,8 +29,9 @@ class SuggestTranslations extends React.Component {
 
   // Teach Autosuggest how to calculate suggestions for any given input value.
   getSuggestions(value, callback) {
-    const lastSentence = value.toLowerCase().split(".").splice(-1)[0].trim();
+    const lastSentence = value.split(".").splice(-1)[0].trim();
     const inputLength = lastSentence.length;
+    if (inputLength == 0) return '';
 
     this.searchAlegre(lastSentence, function(err, response) {
       if(err) {
@@ -61,9 +62,11 @@ class SuggestTranslations extends React.Component {
   };
 
   onChange = (event, { newValue }) => {
-    this.setState({
-      value: newValue
-    });
+    if(event.type != 'keydown') {
+      this.setState({
+        value: newValue
+      });
+    };
   };
 
   // Autosuggest will call this function every time you need to update
