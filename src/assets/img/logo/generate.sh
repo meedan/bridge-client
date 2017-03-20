@@ -2,7 +2,7 @@
 # Generate icons in different sizes
 # Inkscape and ImageMagick are required
 
-for suffix in 'local' 'edge' 'live'
+for suffix in 'local' 'edge' 'live' 'check'
 do
   img="logo-$suffix.svg"
   

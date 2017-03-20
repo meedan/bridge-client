@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import BridgeSelect from './BridgeSelect';
-import Embedly from './Embedly';
 import BackBar from './BackBar';
+import PenderCard from './PenderCard';
+import config from '../config/config.js';
 
 class SavePost extends Component {
   render() {
@@ -13,7 +14,7 @@ class SavePost extends Component {
           <div className="light-gray-background">
             <h3 className="action">Save to existing project for translation</h3>
             <div className="column form-column">
-              { state.extension.selection ? <div id="quote">{state.extension.selection}</div> : <Embedly url={state.extension.url} /> }
+              { state.extension.selection ? <div id="quote">{state.extension.selection}</div> : <PenderCard url={state.extension.url} penderUrl={config.penderUrl} /> }
               <form onSubmit={submitPost.bind(this)}>
                 <div>
                   <BridgeSelect name="project" objects={state.extension.projects} />

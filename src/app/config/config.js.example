@@ -1,8 +1,8 @@
 var config = {};
 
-config.bridgeApiBase = 'http://bridge-api-base';
-config.bridgeEmbedBase = 'http://localhost:3333';
-config.penderUrl = 'http://localhost:3005';
-config.pusherKey = 'pusher-key';
+config.bridgeApiBase = 'https://check-api-qa.checkmedia.org';
+config.bridgeEmbedBase = 'https://qa.checkmedia.org';
+config.penderUrl = 'https://pender-qa.checkmedia.org';
+config.pusherKey = '';
 
 module.exports = config;

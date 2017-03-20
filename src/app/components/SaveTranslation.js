@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import BridgeSelect from './BridgeSelect';
-import Embedly from './Embedly';
 import BackBar from './BackBar';
+import PenderCard from './PenderCard';
+import config from '../config/config.js';
 
 class SaveTranslation extends Component {
   onTranslationFocus() {
@@ -69,7 +70,7 @@ class SaveTranslation extends Component {
           <div className="light-gray-background">
             <h3 className="action">Translate this post</h3>
             <div className="column form-column" id="translation-form">
-              { state.extension.selection ? <div id="quote">{state.extension.selection}</div> : <Embedly url={state.bridge.url} /> }
+              { state.extension.selection ? <div id="quote">{state.extension.selection}</div> : <PenderCard url={state.bridge.url} penderUrl={config.penderUrl} /> }
               <form onSubmit={state.bridge.action === 'edit' ? updateTranslation.bind(this) : submitTranslation.bind(this)}>
                 
                 <label for="translation">Translation</label>
