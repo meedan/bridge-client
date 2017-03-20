@@ -24,7 +24,7 @@ class ListTranslations extends Component {
         pageSize: translations.length + pageSize
       });
     }
-    
+
     if (translations == null || translations[index] == null) {
       this.setState({ currentTranslationIndex: index - 1 });
     }
@@ -44,16 +44,31 @@ class ListTranslations extends Component {
 
   render() {
     var translation = this.getCurrentTranslation(),
-        content = JSON.parse(translation.content),
-        data = JSON.parse(translation.media.jsondata);
+        fields = JSON.parse(translation.content),
+        media = translation.project_media.media;
+
+    var to, text, comment;
+    for (var i = 0; i < fields.length; i++) {
+      switch (fields[i].field_name) {
+        case 'translation_text':
+          text = fields[i].value;
+          break;
+        case 'translation_language':
+          to = fields[i].value;
+          break;
+        case 'translation_note':
+          comment = fields[i].value;
+          break;
+      }
+    }
 
     return (
       <div className="translation">
         <TranslationToolbar translation={translation} goToTranslation={this.goToTranslation.bind(this)} />
-        { data.quote ? <div id="quote">{data.quote}</div> : <PenderCard url={translation.media.url} penderUrl={config.penderUrl} /> }
-        <p className="translation-languages">Translated from {content.from} to {content.to}</p>
-        <p>{content.translation}</p>
-        <em>{content.comment}</em>
+        { media.quote ? <div id="quote">{media.quote}</div> : <PenderCard url={media.url} penderUrl={config.penderUrl} /> }
+        <p className="translation-languages">Translated to {to}</p>
+        <p>{text}</p>
+        <em>{comment}</em>
       </div>
     );
   }
@@ -74,9 +89,11 @@ const ListTranslationsContainer = Relay.createContainer(ListTranslations, {
             node {
               id,
               content,
-              media {
-                jsondata,
-                url
+              project_media {
+                media {
+                  quote,
+                  url
+                }
               }
             }
           }

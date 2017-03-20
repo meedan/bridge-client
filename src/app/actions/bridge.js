@@ -3,7 +3,7 @@ import superagent from 'superagent';
 import util from 'util';
 import config from '../config/config.js';
 import Relay from 'react-relay';
-import CreateMediaMutation from '../components/CreateMediaMutation';
+import CreateProjectMediaMutation from '../components/CreateProjectMediaMutation';
 
 // Request information from the backend, after logged in
 
@@ -122,7 +122,12 @@ var saveObject = function(dispatch, state, type, view, url) {
   
   var team = session.current_team,
       projects = team ? team.projects : [],
-      languages = session.get_languages; // [{ id: 'en', title: 'English' }, ...]
+      languages = []; // [{ id: 'en', title: 'English' }, ...]
+  try {
+    languages = JSON.parse(session.jsonsettings)['languages'];
+  } catch (e) {
+    languages = [{ id: 'en', title: 'English' }];
+  }
 
   if (!team) {
     var m = '<h1>Oops! Looks like you\'re not assigned to a team yet</h1>' +
@@ -136,7 +141,7 @@ var saveObject = function(dispatch, state, type, view, url) {
     dispatch({ type: ERROR, message: m, view: 'message', session: bstate.session, previousView: bstate.view, image: 'error-unassigned' });
   }
 
-  else if (languages === '') {
+  else if (languages === []) {
     var m = '<h1>Oops! Looks like you don\'t have languages set yet.</h1>' +
             '<h2>Please email us hello@speakbridge.io to choose languages.</h2>';
     dispatch({ type: ERROR, message: m, view: 'message', session: bstate.session, previousView: bstate.view, image: 'error-unassigned' });
@@ -173,11 +178,11 @@ export function submitPost(e) {
         language    = e.target['2'].value,
         state       = getState().bridge,
         url         = getState().extension.url,
-        information = {};
+        information = '';
 
     if (getState().extension.selection) {
       url = '';
-      information = { quote: getState().extension.selection };
+      information = getState().extension.selection;
     }
 
     var onFailure = (transaction) => {
@@ -194,18 +199,16 @@ export function submitPost(e) {
       window.storage.set(url + ' annotation', '');
       window.storage.set(url + ' translation', '');
         
-      var embed_url = config.bridgeEmbedBase.replace(/^(https?:\/\/)/, '$1' + state.session.current_team.subdomain + '.') + '/project/' + project_id + '/media/' + response.createMedia.media.dbid;
+      var embed_url = config.bridgeEmbedBase + '/' + state.session.current_team.slug + '/project/' + project_id + '/media/' + response.createProjectMedia.project_media.dbid;
 
       dispatch({ type: SAVE_POST, message: '<h1>Success!</h1><h2>This post will be available for translators at <a href="' + embed_url + '" target="_blank" class="plain-link">' + embed_url + '</a></h2>', view: 'message', session: state.session, previousView: 'reload', image: 'confirmation-saved' })
     };
 
     Relay.Store.commitUpdate(
-      new CreateMediaMutation({
-        media: {
-          url: url,
-          information: information,
-          project_id: parseInt(project_id)
-        }
+      new CreateProjectMediaMutation({
+        url: url,
+        quote: information,
+        project_id: parseInt(project_id)
       }),
       { onSuccess, onFailure }
     );
@@ -227,11 +230,11 @@ export function submitTranslation(e) {
         comment     = form.annotation.value,
         state       = getState().bridge,
         url         = getState().extension.url,
-        information = {};
+        information = '';
 
     if (getState().extension.selection) {
       url = '';
-      information = { quote: getState().extension.selection };
+      information = getState().extension.selection;
     }
 
     if (comment === 'Enter your annotation here') {
@@ -265,19 +268,17 @@ export function submitTranslation(e) {
         window.storage.set(url + ' annotation', '');
         window.storage.set(url + ' translation', '');
 
-        var embed_url = config.bridgeEmbedBase.replace(/^(https?:\/\/)/, '$1' + state.session.current_team.subdomain + '.') + '/project/' + project_id + '/media/' + response.createMedia.media.dbid;
+        var embed_url = config.bridgeEmbedBase + '/' + state.session.current_team.slug + '/project/' + project_id + '/media/' + response.createProjectMedia.project_media.dbid;
 
         dispatch({ type: SAVE_TRANSLATION, message: '<h1>Success! Thank you!</h1><h2>See your translation at</h2><a href="' + embed_url + '" target="_blank" class="plain-link">' + embed_url + '</a>', view: 'message', session: state.session, previousView: 'reload', image: 'confirmation-translated' });
       };
 
       Relay.Store.commitUpdate(
-        new CreateMediaMutation({
-          media: {
-            translation: { annotation_type: 'translation', translation: translation, from: from, to: to, comment: comment },
-            information: information,
-            url: url,
-            project_id: parseInt(project_id)
-          }
+        new CreateProjectMediaMutation({
+          url: url,
+          quote: information,
+          project_id: parseInt(project_id),
+          annotation: { annotation_type: 'translation', set_fields: JSON.stringify({ translation_text: translation, translation_note: comment, translation_language: to }) }
         }),
         { onSuccess, onFailure }
       );
